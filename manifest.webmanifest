@@ -1,0 +1,20 @@
+{
+  "name": "Perrimón · Las cuentas en pareja",
+  "short_name": "Perrimón",
+  "description": "La regla 50/30/20 para cada persona de la pareja, con los gastos comunes a medias.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EEF1EC",
+  "theme_color": "#1F5C48",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Apuntar gasto", "url": "./#apuntar", "icons": [{ "src": "icon-192.png", "sizes": "192x192" }] }
+  ]
+}
