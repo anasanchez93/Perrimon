@@ -1,6 +1,6 @@
 // Perrimón — service worker: guarda la app para que abra rápido y sin conexión.
 // Los datos NO pasan por aquí: van directamente del móvil a la hoja de Google de cada pareja.
-const VERSION = 'perrimon-v1';
+const VERSION = 'perrimon-v2';
 const ARCHIVOS = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
