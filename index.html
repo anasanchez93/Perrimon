@@ -236,7 +236,7 @@ code{font-family:var(--font-m);font-size:.85em;background:var(--soft);padding:1p
         </div>
         <div class="filtros" id="ckFiltros"></div>
         <div id="ckGrupos" style="display:flex;flex-direction:column;gap:16px"></div>
-        <p class="small muted" style="margin:0">Los recibos salen de la pestaña <b>Check list</b> de vuestra hoja. Cada uno se tacha solo cuando aparece un movimiento con alguna de sus palabras y, si tiene importe, con ese importe (±10 %). Los ingresos se reconocen por el importe. Si pagas uno por otra vía, márcalo a mano: esa marca se queda en este móvil.</p>
+        <p class="small muted" style="margin:0">Los recibos salen de la pestaña <b>Check list</b> de vuestra hoja. Cada uno se tacha solo cuando aparece un movimiento con alguna de sus palabras y, si tiene importe, con ese importe (±10 %). Los ingresos se reconocen por el importe. Toca la casilla de cualquier recibo para marcarlo como pagado o para quitarlo, aunque se haya tachado solo. Esas marcas se guardan en este móvil.</p>
       </section>
 
       <section id="t-ajustes" hidden>
@@ -499,24 +499,28 @@ function pintarCheck() {
     $('#ckGrupos').innerHTML = '<div class="banner">Para usar la check list, vuestra hoja necesita la pestaña <b>Check list</b> y el script actualizado (archivo <code>apps-script/checklist.gs</code> del proyecto). Después vuelve a abrir la app.</div>';
     ['#ckPas', '#ckCob', '#ckFalta'].forEach(s => $(s).textContent = '—'); $('#ckAviso').textContent = ''; $('#ckBarra').style.width = '0%'; return;
   }
-  const items = recibos().filter(tocaEsteMes), det = detectar(items), man = ckManual[D.mes] || {};
+  const items = recibos().filter(tocaEsteMes), det0 = detectar(items), man = ckManual[D.mes] || {};
+  // Lo marcado a mano manda: «no» quita un recibo que la hoja había reconocido solo.
+  const det = {}; for (const k in det0) if (man[k] !== 'no') det[k] = det0[k];
+  const hechoR = r => !!det[r.id] || (!!man[r.id] && man[r.id] !== 'no');
   const vis = items.filter(r => ckFiltro === 'todos' || r.q === ckFiltro);
   const cur = mesActual(), hoyD = new Date().getDate();
   const fila = r => {
-    const g = det[r.id], m = man[r.id], hecho = !!(g || m);
+    const g = det[r.id], m = man[r.id], hecho = hechoR(r);
     let est = '';
     if (g) est = `<span class="chip ok">En la hoja · ${g.fecha.slice(8, 10)}/${g.fecha.slice(5, 7)}</span>`;
+    else if (m === 'no') est = '<span class="chip">Quitado a mano</span>';
     else if (m) est = '<span class="chip">Marcado a mano</span>';
     else if (r.dia && (D.mes < cur || (D.mes === cur && hoyD > r.dia + 2))) est = `<span class="chip warn">${r.ingreso ? 'Debería haber llegado' : 'Debería haber pasado'}</span>`;
     const imp = g ? eur(Math.abs(g.importe)) : r.imp != null ? eur(r.imp) : 'variable';
-    return `<li class="${hecho ? 'hecho' : ''}"><label><input type="checkbox" id="ck-${r.id}" data-id="${r.id}" ${hecho ? 'checked' : ''} ${g ? 'disabled' : ''} aria-label="${esc(r.c)}">
+    return `<li class="${hecho ? 'hecho' : ''}"><label><input type="checkbox" id="ck-${r.id}" data-id="${r.id}" ${hecho ? 'checked' : ''} aria-label="${esc(r.c)}">
       <span class="c">${esc(r.c)}</span><span class="imp num${r.ingreso ? ' ok' : ''}">${r.ingreso ? '+' : ''}${imp}</span>
       <span class="meta"><span>${esc(r.q)}</span>${r.dia ? `<span>· día ${r.dia}</span>` : ''}${r.nota ? `<span>· ${esc(r.nota)}</span>` : ''}${est}</span></label></li>`;
   };
   const grupos = [['Cada mes', vis.filter(r => !r.ingreso && !r.meses.length && !r.pagos)], ['Este mes también', vis.filter(r => !r.ingreso && (r.meses.length || r.pagos))], ['Cobros previstos', vis.filter(r => r.ingreso)]].filter(x => x[1].length);
-  $('#ckGrupos').innerHTML = grupos.length ? grupos.map(([t, rs]) => `<div class="ck-grupo"><div class="ck-head"><h3>${t}</h3><span class="small muted">${rs.filter(r => det[r.id] || man[r.id]).length} de ${rs.length}</span></div>
+  $('#ckGrupos').innerHTML = grupos.length ? grupos.map(([t, rs]) => `<div class="ck-grupo"><div class="ck-head"><h3>${t}</h3><span class="small muted">${rs.filter(hechoR).length} de ${rs.length}</span></div>
     <ul class="ck">${rs.sort((a, b) => (a.dia || 99) - (b.dia || 99)).map(fila).join('')}</ul></div>`).join('') : '<div class="vacio">No hay recibos para este filtro.</div>';
-  const base = vis.filter(r => !r.ingreso), hechos = base.filter(r => det[r.id] || man[r.id]), pend = base.filter(r => !det[r.id] && !man[r.id]);
+  const base = vis.filter(r => !r.ingreso), hechos = base.filter(hechoR), pend = base.filter(r => !hechoR(r));
   $('#ckPas').textContent = hechos.length + ' de ' + base.length;
   $('#ckCob').textContent = eur(hechos.reduce((s, r) => s + (det[r.id] ? -det[r.id].importe : (r.imp || 0)), 0));
   $('#ckFalta').textContent = eur(pend.reduce((s, r) => s + (r.imp || 0), 0));
@@ -527,7 +531,10 @@ function pintarCheck() {
 $('#ckFiltros').onclick = e => { const b = e.target.closest('button'); if (!b) return; ckFiltro = b.dataset.v; ls.set('perrimon_ckFiltro', ckFiltro); pintarCheck(); };
 $('#ckGrupos').addEventListener('change', e => {
   const id = e.target.dataset.id; if (!id || !D) return;
-  const m = {...(ckManual[D.mes] || {})}; if (e.target.checked) m[id] = hoyISO(); else delete m[id];
+  const m = {...(ckManual[D.mes] || {})};
+  const auto = !!detectar(recibos().filter(tocaEsteMes))[id];   // ¿la hoja lo reconoce sola?
+  if (e.target.checked) { if (auto) delete m[id]; else m[id] = hoyISO(); }
+  else { if (auto) m[id] = 'no'; else delete m[id]; }
   ckManual[D.mes] = m; ls.set('perrimon_ckManual', ckManual); pintarCheck();
 });
 
