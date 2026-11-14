@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Perrimón</title>
-<meta name="description" content="Economía en pareja con la regla 50/30/20 para cada persona.">
+<meta name="description" content="Tus cuentas, sola o en pareja, con la regla 50/30/20 para cada persona.">
 <meta name="theme-color" content="#1F5C48" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F1613" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -126,13 +126,13 @@ code{font-family:var(--font-m);font-size:.85em;background:var(--soft);padding:1p
   <!-- CONFIGURACIÓN INICIAL -->
   <section id="v-setup" hidden>
     <div style="padding-block:18px 6px">
-      <div class="label">Economía en pareja</div>
+      <div class="label">Tus cuentas, sola o en pareja</div>
       <h1>Perrimón</h1>
       <p class="muted" style="margin:6px 0 0">La regla 50/30/20 para cada una de las dos personas, con los gastos comunes a medias.</p>
     </div>
     <div class="card">
-      <h2>Conecta vuestra hoja</h2>
-      <p class="small muted" style="margin:0">Necesitáis vuestra copia de la plantilla de Google con el script activado. Los datos se quedan en vuestra hoja: esta app no guarda nada en ningún servidor.</p>
+      <h2>Conecta tu hoja</h2>
+      <p class="small muted" style="margin:0">Necesitas tu copia de la plantilla de Google con el script activado. Los datos se quedan en tu hoja: esta app no guarda nada en ningún servidor.</p>
       <form id="fSetup" autocomplete="off">
         <div class="field">
           <label class="label" for="sUrl">URL del script (termina en /exec)</label>
@@ -152,7 +152,7 @@ code{font-family:var(--font-m);font-size:.85em;background:var(--soft);padding:1p
     <details class="card">
       <summary><b>¿Dónde encuentro la URL y la clave?</b></summary>
       <ol class="pasos small">
-        <li>Haced vuestra copia de la plantilla y seguid su pestaña <b>Instrucciones</b>.</li>
+        <li>Haz tu copia de la plantilla y sigue su pestaña <b>Instrucciones</b>.</li>
         <li>La clave es la que escribisteis en <b>Ajustes → B47</b>.</li>
         <li>La URL sale al implementar el script: <b>Extensiones → Apps Script → Implementar → Gestionar implementaciones</b>.</li>
       </ol>
@@ -203,7 +203,7 @@ code{font-family:var(--font-m);font-size:.85em;background:var(--soft);padding:1p
               <label class="label" for="gConcepto">Concepto o comercio</label>
               <input id="gConcepto" placeholder="Mercadona, gasolina, cena…" required>
             </div>
-            <div class="field"><span class="label">¿De quién es?</span><div class="seg" id="gQuien"></div></div>
+            <div class="field" data-pareja><span class="label">¿De quién es?</span><div class="seg" id="gQuien"></div></div>
             <div class="field" id="pagoBox" hidden><span class="label">¿Con qué se ha pagado?</span><div class="seg" id="gPago"></div></div>
             <div class="row2">
               <div class="field"><label class="label" for="gCat">Categoría</label><select id="gCat"></select></div>
@@ -219,7 +219,7 @@ code{font-family:var(--font-m);font-size:.85em;background:var(--soft);padding:1p
       <section id="t-movs" hidden>
         <div class="filtros" id="filtros"></div>
         <div class="card"><div class="lista" id="lista"></div>
-          <p class="small muted" style="margin:0">Para corregir o borrar un movimiento, hazlo en vuestra hoja de Google.</p>
+          <p class="small muted" style="margin:0">Para corregir o borrar un movimiento, hazlo en la hoja de Google.</p>
         </div>
       </section>
 
@@ -236,14 +236,14 @@ code{font-family:var(--font-m);font-size:.85em;background:var(--soft);padding:1p
         </div>
         <div class="filtros" id="ckFiltros"></div>
         <div id="ckGrupos" style="display:flex;flex-direction:column;gap:16px"></div>
-        <p class="small muted" style="margin:0">Los recibos salen de la pestaña <b>Check list</b> de vuestra hoja. Cada uno se tacha solo cuando aparece un movimiento con alguna de sus palabras y, si tiene importe, con ese importe (±10 %). Los ingresos se reconocen por el importe. Toca la casilla de cualquier recibo para marcarlo como pagado o para quitarlo, aunque se haya tachado solo. Esas marcas se guardan en este móvil.</p>
+        <p class="small muted" style="margin:0">Los recibos salen de la pestaña <b>Check list</b> de la hoja. Cada uno se tacha solo cuando aparece un movimiento con alguna de sus palabras y, si tiene importe, con ese importe (±10 %). Los ingresos se reconocen por el importe. Toca la casilla de cualquier recibo para marcarlo como pagado o para quitarlo, aunque se haya tachado solo. Esas marcas se guardan en este móvil.</p>
       </section>
 
       <section id="t-ajustes" hidden>
         <div class="card">
           <h2>Ajustes</h2>
-          <div class="field"><span class="label">En este móvil soy</span><div class="seg" id="soySeg"></div></div>
-          <p class="small muted" style="margin:0">Los nombres, ingresos y categorías se cambian en la pestaña Ajustes de vuestra hoja de Google.</p>
+          <div class="field" data-pareja><span class="label">En este móvil soy</span><div class="seg" id="soySeg"></div></div>
+          <p class="small muted" style="margin:0">Los nombres, ingresos y categorías se cambian en la pestaña Ajustes de la hoja de Google. Para usarla sola, deja sin nombre la segunda persona.</p>
           <button class="btn ghost" id="btnRecargar" type="button">Actualizar datos ahora</button>
           <button class="btn ghost" id="btnDesconectar" type="button">Desconectar este móvil</button>
         </div>
@@ -328,6 +328,10 @@ $('#fSetup').onsubmit = async e => {
   try {
     const j = await api({accion:'datos'}, {url, clave});
     cfg = {url, clave, soy: j.nombres[0]};
+    if (esSolo(j)) {
+      $('#setupMsg').innerHTML = `<span class="ok">Conectado con la hoja de ${esc(j.nombres[0])}.</span>`;
+      ls.set('perrimon_cfg', cfg); D = j; mes = j.mes; ls.set('perrimon_' + j.mes, j); arrancar(); return;
+    }
     $('#setupMsg').innerHTML = `<span class="ok">Conectado con la hoja de ${esc(j.nombres[0])} y ${esc(j.nombres[1])}.</span>`;
     $('#setupSoy').hidden = false;
     seg($('#soySetup'), [[j.nombres[0], j.nombres[0]], [j.nombres[1], j.nombres[1]]], null, v => { cfg.soy = v; ls.set('perrimon_cfg', cfg); D = j; mes = j.mes; ls.set('perrimon_' + j.mes, j); arrancar(); });
@@ -346,6 +350,15 @@ function tab(t) {
 $('#tabbar').onclick = e => { const b = e.target.closest('button'); if (b) tab(b.dataset.t); };
 $('#mesPrev').onclick = () => { mes = moverMes(mes || mesActual(), -1); cargar(); };
 $('#mesNext').onclick = () => { mes = moverMes(mes || mesActual(), 1); cargar(); };
+
+/* ---------- Una persona o dos ---------- */
+// Si en Ajustes la segunda fila no tiene nombre, la app funciona para una sola persona.
+const esSolo = d => !d || !d.nombres || !String(d.nombres[1] || '').trim() || d.nombres[1] === '—';
+function modoSolo() {
+  const solo = esSolo(D);
+  document.querySelectorAll('[data-pareja]').forEach(el => el.hidden = solo);
+  return solo;
+}
 
 /* ---------- Cálculos ---------- */
 function calc() {
@@ -409,15 +422,16 @@ function tarjeta(nombre, ingBase, p, per, i, extras) {
 function pintar() {
   if (!D) return;
   const [A, B] = D.nombres;
-  $('#pareja').textContent = A + ' y ' + B;
+  const solo = modoSolo();
+  $('#pareja').textContent = solo ? A : A + ' y ' + B;
   $('#mesTxt').textContent = nombreMes(D.mes || mes);
   const c = calc();
   const per = D.periodos || [];
-  $('#personas').innerHTML = tarjeta(A, D.ingresos[0], c.P[A], per[0], 0, c.ex.por[A]) + tarjeta(B, D.ingresos[1], c.P[B], per[1], 1, c.ex.por[B]);
+  $('#personas').innerHTML = tarjeta(A, D.ingresos[0], c.P[A], per[0], 0, c.ex.por[A]) + (solo ? '' : tarjeta(B, D.ingresos[1], c.P[B], per[1], 1, c.ex.por[B]));
   $('#kTotal').textContent = eur(c.total); $('#kFijo').textContent = eur(c.fijo); $('#kVar').textContent = eur(c.vari);
   $('#nMov').textContent = D.gastos.length + (D.gastos.length === 1 ? ' movimiento' : ' movimientos');
   const dif = (c.pag[A] - c.pag[B]) / 2;
-  $('#balance').innerHTML = c.pag[A] + c.pag[B] === 0 ? '<span class="muted">Gastos comunes: nadie ha adelantado dinero con su tarjeta.</span>'
+  $('#balance').innerHTML = solo ? '' : c.pag[A] + c.pag[B] === 0 ? '<span class="muted">Gastos comunes: nadie ha adelantado dinero con su tarjeta.</span>'
     : Math.abs(dif) < 0.01 ? 'Gastos comunes: estáis en paz.'
     : `Gastos comunes: <b>${esc(dif > 0 ? B : A)}</b> le debe <b class="num">${eur(Math.abs(dif))}</b> a <b>${esc(dif > 0 ? A : B)}</b>.`;
   const tipoCat = Object.fromEntries(D.categorias.map(x => [x.nombre, tipoKey(x.tipo)]));
@@ -428,7 +442,8 @@ function pintar() {
 }
 function pintarFiltros() {
   const [A, B] = D.nombres;
-  $('#filtros').innerHTML = [['todos', 'Todos'], [A, A], [B, B], ['Común', 'Común']].map(([v, t]) => `<button class="mini" data-v="${esc(v)}" aria-pressed="${filtro === v}">${esc(t)}</button>`).join('');
+  if (esSolo(D)) filtro = 'todos';
+  $('#filtros').innerHTML = esSolo(D) ? '' : [['todos', 'Todos'], [A, A], [B, B], ['Común', 'Común']].map(([v, t]) => `<button class="mini" data-v="${esc(v)}" aria-pressed="${filtro === v}">${esc(t)}</button>`).join('');
 }
 $('#filtros').onclick = e => { const b = e.target.closest('button'); if (!b) return; filtro = b.dataset.v; pintarFiltros(); pintarLista(); };
 function pintarLista() {
@@ -493,10 +508,11 @@ function ingresosExtra() {
 function pintarCheck() {
   if (!D) return;
   const [A, B] = D.nombres;
-  $('#ckFiltros').innerHTML = [['todos', 'Todos'], [A, A], [B, B], ['Común', 'Común']].map(([v, t]) => `<button class="mini" data-v="${esc(v)}" aria-pressed="${ckFiltro === v}">${esc(t)}</button>`).join('');
+  if (esSolo(D)) ckFiltro = 'todos';
+  $('#ckFiltros').innerHTML = esSolo(D) ? '' : [['todos', 'Todos'], [A, A], [B, B], ['Común', 'Común']].map(([v, t]) => `<button class="mini" data-v="${esc(v)}" aria-pressed="${ckFiltro === v}">${esc(t)}</button>`).join('');
   $('#ckMes').textContent = D.mes ? nombreMes(D.mes) : '';
   if (!D.checklist) {
-    $('#ckGrupos').innerHTML = '<div class="banner">Para usar la check list, vuestra hoja necesita la pestaña <b>Check list</b> y el script actualizado (archivo <code>apps-script/checklist.gs</code> del proyecto). Después vuelve a abrir la app.</div>';
+    $('#ckGrupos').innerHTML = '<div class="banner">Para usar la check list, la hoja necesita la pestaña <b>Check list</b> y el script actualizado (archivo <code>apps-script/checklist.gs</code> del proyecto). Después vuelve a abrir la app.</div>';
     ['#ckPas', '#ckCob', '#ckFalta'].forEach(s => $(s).textContent = '—'); $('#ckAviso').textContent = ''; $('#ckBarra').style.width = '0%'; return;
   }
   const items = recibos().filter(tocaEsteMes), det0 = detectar(items), man = ckManual[D.mes] || {};
@@ -543,6 +559,7 @@ seg($('#gSigno'), [['gasto', 'Gasto'], ['entrada', 'Me devuelven']], 'gasto', v 
 seg($('#gClase'), [['Variable', 'Variable'], ['Fijo', 'Fijo']], 'Variable');
 function prepararForm() {
   if (!D) return; const [A, B] = D.nombres; const yo = cfg.soy || A;
+  if (esSolo(D)) cfg.soy = A;
   if (!$('#gQuien').children.length || $('#gQuien').dataset.n !== A + B) {
     $('#gQuien').dataset.n = A + B;
     seg($('#gQuien'), [[A, A], [B, B], ['Común', 'Común']], yo, v => $('#pagoBox').hidden = v !== 'Común');
@@ -585,10 +602,10 @@ async function cargar(forzar) {
   try {
     const j = await api(mes ? {accion:'datos', mes} : {accion:'datos'});
     D = j; mes = j.mes; ls.set('perrimon_' + mes, j); if (j.mes) ls.set('perrimon_actual_mes', j.mes); aviso(''); pintar();
-    $('#estado').innerHTML = `<span>Datos de vuestra hoja · ${new Date().toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'})}</span>`;
+    $('#estado').innerHTML = `<span>Datos de la hoja · ${new Date().toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'})}</span>`;
   } catch (err) {
     if (err.code === 'clave' || err.code === 'falta_clave') aviso(esc(err.message) + ' Ve a Ajustes → Desconectar y vuelve a conectar con la clave correcta.', 'bad');
-    else if (err.code === 'red') aviso(cache ? 'Sin conexión: estás viendo los últimos datos guardados en este móvil.' : 'Sin conexión con vuestra hoja. Revisa internet y vuelve a intentarlo.', cache ? '' : 'bad');
+    else if (err.code === 'red') aviso(cache ? 'Sin conexión: estás viendo los últimos datos guardados en este móvil.' : 'Sin conexión con la hoja. Revisa internet y vuelve a intentarlo.', cache ? '' : 'bad');
     else aviso('No se han podido leer los datos: ' + esc(err.message), 'bad');
     if (!cache && !D) { D = {nombres:['—', '—'], ingresos:[0, 0], categorias:[], gastos:[]}; pintar(); }
   } finally { $('#main').classList.remove('cargando'); }
